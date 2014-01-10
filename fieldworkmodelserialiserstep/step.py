@@ -1,6 +1,11 @@
 
 '''
-MAP Client Plugin Step
+MAP Client Plugin - Fieldwork Model Serialiser Step
+Saves a fieldwork geometric_field to disk. Inputs are a GF and 
+a list of filenames for the GF, ensemble, mesh, and path. If 
+list of filenames is input, they override the filenames in 
+the plugin config. Filenames for ensemble, mesh, and path 
+can be None in input list, or empty strings in config.
 '''
 import os
 
