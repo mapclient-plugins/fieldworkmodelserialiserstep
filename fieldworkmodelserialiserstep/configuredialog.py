@@ -32,6 +32,7 @@ class ConfigureDialog(QtGui.QDialog):
 
     def _makeConnections(self):
         self._ui.lineEdit0.textChanged.connect(self.validate)
+        self._ui.lineEdit1.textChanged.connect(self.validate)
 
     def accept(self):
         '''
