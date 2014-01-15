@@ -30,12 +30,23 @@ class FieldworkModelSerialiserStep(WorkflowStepMountPoint):
         self._category = 'Output'
         # Add any other initialisation code here:
         # Ports:
+
         self.addPort(('http://physiomeproject.org/workflow/1.0/rdf-schema#port',
                       'http://physiomeproject.org/workflow/1.0/rdf-schema#uses',
                       'ju#fieldworkmodel'))
         self.addPort(('http://physiomeproject.org/workflow/1.0/rdf-schema#port',
                       'http://physiomeproject.org/workflow/1.0/rdf-schema#uses',
-                      'ju#fieldworkmodelfilenames'))
+                      'String'))
+        self.addPort(('http://physiomeproject.org/workflow/1.0/rdf-schema#port',
+                      'http://physiomeproject.org/workflow/1.0/rdf-schema#uses',
+                      'String'))
+        self.addPort(('http://physiomeproject.org/workflow/1.0/rdf-schema#port',
+                      'http://physiomeproject.org/workflow/1.0/rdf-schema#uses',
+                      'String'))
+        self.addPort(('http://physiomeproject.org/workflow/1.0/rdf-schema#port',
+                      'http://physiomeproject.org/workflow/1.0/rdf-schema#uses',
+                      'String'))
+
         self._config = {}
         self._config['identifier'] = ''
         self._config['GF Filename'] = ''
@@ -44,8 +55,10 @@ class FieldworkModelSerialiserStep(WorkflowStepMountPoint):
         self._config['Path'] = ''
 
         self._GF = None
-        self._filenames = None
-
+        self._GFFilename = None
+        self._ensFilename = None
+        self._meshFilename = None
+        self._path = None
 
     def execute(self):
         '''
@@ -54,22 +67,30 @@ class FieldworkModelSerialiserStep(WorkflowStepMountPoint):
         may be connected up to a button in a widget for example.
         '''
         # Put your execute step code here before calling the '_doneExecution' method.
-        if self._filenames!=None:
-            gfFilename = self._filenames[0]
-            ensFilename = self._filenames[1]
-            meshFilename = self._filenames[2]
-            path = self._filenames[3]
+        if self._GFFilename!=None:
+            gfFilename = self._GFFilename
         else:
             gfFilename = self._config['GF Filename']
-            if len(self._config['Ensemble Filename'])==0:
-                ensFilename = None
-            else:
-                ensFilename = self._config['Ensemble Filename']
-            if len(self._config['Mesh Filename'])==0:
-                meshFilename = None
-            else:
-                meshFilename = self._config['Mesh Filename']
 
+        if self._ensFilename!=None:
+            ensFilename = self._ensFilename
+        elif self._config['Ensemble Filename']==None:
+            ensFilename = None
+        else:
+            ensFilename = self._config['Ensemble Filename']
+
+        if self._meshFilename!=None:
+            meshFilename = self._meshFilename
+        elif self._config['Mesh Filename']==None:
+            meshFilename = None
+        else:
+            meshFilename = self._config['Mesh Filename']
+
+        if self._path!=None:
+            path = self._path
+        elif self._config['Path']==None:
+            path = ''
+        else:
             path = self._config['Path']
 
         self._GF.save_geometric_field(gfFilename, ensFilename, meshFilename, path=path)
@@ -83,8 +104,14 @@ class FieldworkModelSerialiserStep(WorkflowStepMountPoint):
         '''
         if index == 0:
             self._GF = dataIn # ju#fieldworkmodel
+        elif index == 1:
+            self._GFFilenames = dataIn # String
+        elif index == 2:
+            self._ensFilenames = dataIn # String
+        elif index == 3:
+            self._meshFilenames = dataIn # String
         else:
-            self._filenames = dataIn # ju#fieldworkmodelfilenames
+            self._path = dataIn
 
     def configure(self):
         '''
