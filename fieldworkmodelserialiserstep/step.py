@@ -74,26 +74,35 @@ class FieldworkModelSerialiserStep(WorkflowStepMountPoint):
 
         if self._ensFilename!=None:
             ensFilename = self._ensFilename
-        elif self._config['Ensemble Filename']==None:
+        elif self._config['Ensemble Filename']=='':
             ensFilename = None
         else:
             ensFilename = self._config['Ensemble Filename']
 
         if self._meshFilename!=None:
             meshFilename = self._meshFilename
-        elif self._config['Mesh Filename']==None:
+        elif self._config['Mesh Filename']=='':
             meshFilename = None
         else:
             meshFilename = self._config['Mesh Filename']
 
         if self._path!=None:
             path = self._path
-        elif self._config['Path']==None:
+        elif self._config['Path']=='':
             path = ''
         else:
             path = self._config['Path']
 
-        self._GF.save_geometric_field(gfFilename, ensFilename, meshFilename, path=path)
+        print 'serialising fieldwork model to:'
+        print gfFilename+'.geof'
+        if ensFilename!=None:
+            print ensFilename+'.ens'
+        if meshFilename!=None:
+            print meshFilename+'.mesh'
+        if path!='':
+            print 'path: '+path
+        
+        self._GF.save_geometric_field(gfFilename, ensFilename, meshFilename, path)
         self._doneExecution()
 
     def setPortData(self, index, dataIn):
@@ -105,11 +114,11 @@ class FieldworkModelSerialiserStep(WorkflowStepMountPoint):
         if index == 0:
             self._GF = dataIn # ju#fieldworkmodel
         elif index == 1:
-            self._GFFilenames = dataIn # String
+            self._GFFilename = dataIn # String
         elif index == 2:
-            self._ensFilenames = dataIn # String
+            self._ensFilename = dataIn # String
         elif index == 3:
-            self._meshFilenames = dataIn # String
+            self._meshFilename = dataIn # String
         else:
             self._path = dataIn
 
