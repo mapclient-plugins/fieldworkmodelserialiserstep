@@ -15,9 +15,6 @@ from PySide import QtCore
 from mountpoints.workflowstep import WorkflowStepMountPoint
 from fieldworkmodelserialiserstep.configuredialog import ConfigureDialog
 
-from fieldwork.field import geometric_field
-
-
 class FieldworkModelSerialiserStep(WorkflowStepMountPoint):
     '''
     Skeleton step which is intended to be a helpful starting point
