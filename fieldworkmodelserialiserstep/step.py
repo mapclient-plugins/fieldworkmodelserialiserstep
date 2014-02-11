@@ -17,8 +17,7 @@ from fieldworkmodelserialiserstep.configuredialog import ConfigureDialog
 
 class FieldworkModelSerialiserStep(WorkflowStepMountPoint):
     '''
-    Skeleton step which is intended to be a helpful starting point
-    for new steps.
+    Step for saving a fieldwork model to disk.
     '''
 
     def __init__(self, location):
