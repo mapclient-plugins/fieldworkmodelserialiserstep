@@ -1,7 +1,7 @@
 
 
 from PySide import QtGui
-from fieldworkmodelserialiserstep.ui_configuredialog import Ui_ConfigureDialog
+from mapclientplugins.fieldworkmodelserialiserstep.ui_configuredialog import Ui_ConfigureDialog
 
 INVALID_STYLE_SHEET = 'background-color: rgba(239, 0, 0, 50)'
 DEFAULT_STYLE_SHEET = ''
