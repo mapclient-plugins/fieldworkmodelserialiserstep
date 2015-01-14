@@ -89,14 +89,14 @@ class FieldworkModelSerialiserStep(WorkflowStepMountPoint):
         else:
             path = self._config['Path']
 
-        print 'serialising fieldwork model to:'
-        print gfFilename+'.geof'
+        print('serialising fieldwork model to:')
+        print(gfFilename+'.geof')
         if ensFilename!=None:
-            print ensFilename+'.ens'
+            print(ensFilename+'.ens')
         if meshFilename!=None:
-            print meshFilename+'.mesh'
+            print(meshFilename+'.mesh')
         if path!='':
-            print 'path: '+path
+            print('path: '+path)
         
         self._GF.save_geometric_field(gfFilename, ensFilename, meshFilename, path)
         self._doneExecution()
