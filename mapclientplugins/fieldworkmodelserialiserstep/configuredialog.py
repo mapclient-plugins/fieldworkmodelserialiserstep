@@ -74,6 +74,10 @@ class ConfigureDialog(QtGui.QDialog):
         else:
             self._ui.idLineEdit.setStyleSheet(INVALID_STYLE_SHEET)
 
+        # ok button can be pressed as long as id is okay, rest of configs
+        # don't have to be valid
+        self._ui.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(idValid)
+
         gfLocValid = len(self._ui.gfLocLineEdit.text())>0
         if gfLocValid:
             self._ui.gfLocLineEdit.setStyleSheet(DEFAULT_STYLE_SHEET)
@@ -81,7 +85,7 @@ class ConfigureDialog(QtGui.QDialog):
             self._ui.gfLocLineEdit.setStyleSheet(INVALID_STYLE_SHEET)
 
         valid = idValid and gfLocValid
-        self._ui.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(valid)
+        # self._ui.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(valid)
 
         return valid
 
