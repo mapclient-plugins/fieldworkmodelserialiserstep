@@ -23,7 +23,7 @@ class FieldworkModelSerialiserStep(WorkflowStepMountPoint):
     def __init__(self, location):
         super(FieldworkModelSerialiserStep, self).__init__('Fieldwork Model Serialiser', location)
         self._configured = False # A step cannot be executed until it has been configured.
-        self._category = 'Output'
+        self._category = 'Sink'
         # Add any other initialisation code here:
         # Ports:
 
