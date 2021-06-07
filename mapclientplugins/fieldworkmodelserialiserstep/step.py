@@ -7,10 +7,7 @@ list of filenames is input, they override the filenames in
 the plugin config. Filenames for ensemble, mesh, and path 
 can be None in input list, or empty strings in config.
 '''
-import os
 import json
-
-from PySide import QtGui
 
 from mapclient.mountpoints.workflowstep import WorkflowStepMountPoint
 from mapclientplugins.fieldworkmodelserialiserstep.configuredialog import ConfigureDialog

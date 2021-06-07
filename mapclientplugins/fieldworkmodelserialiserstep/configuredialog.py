@@ -1,12 +1,11 @@
 
-import os
-from PySide import QtGui
+from PySide2 import QtWidgets
 from mapclientplugins.fieldworkmodelserialiserstep.ui_configuredialog import Ui_Dialog
 
 INVALID_STYLE_SHEET = 'background-color: rgba(239, 0, 0, 50)'
 DEFAULT_STYLE_SHEET = 'background-color: rgba(255, 255, 255, 50)'
 
-class ConfigureDialog(QtGui.QDialog):
+class ConfigureDialog(QtWidgets.QDialog):
     '''
     Configure dialog to present the user with the options to configure this step.
     '''
@@ -15,7 +14,7 @@ class ConfigureDialog(QtGui.QDialog):
         '''
         Constructor
         '''
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
         
         self._ui = Ui_Dialog()
         self._ui.setupUi(self)
@@ -50,14 +49,14 @@ class ConfigureDialog(QtGui.QDialog):
         Override the accept method so that we can confirm saving an
         invalid configuration.
         '''
-        result = QtGui.QMessageBox.Yes
+        result = QtWidgets.QMessageBox.Yes
         if not self.validate():
-            result = QtGui.QMessageBox.warning(self, 'Invalid Configuration',
+            result = QtWidgets.QMessageBox.warning(self, 'Invalid Configuration',
                 'This configuration is invalid.  Unpredictable behaviour may result if you choose \'Yes\', are you sure you want to save this configuration?)',
-                QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
+                QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No, QtWidgets.QMessageBox.No)
 
-        if result == QtGui.QMessageBox.Yes:
-            QtGui.QDialog.accept(self)
+        if result == QtWidgets.QMessageBox.Yes:
+            QtWidgets.QDialog.accept(self)
 
     def validate(self):
         '''
@@ -76,7 +75,7 @@ class ConfigureDialog(QtGui.QDialog):
 
         # ok button can be pressed as long as id is okay, rest of configs
         # don't have to be valid
-        self._ui.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(idValid)
+        self._ui.buttonBox.button(QtWidgets.QDialogButtonBox.Ok).setEnabled(idValid)
 
         gfLocValid = len(self._ui.gfLocLineEdit.text())>0
         if gfLocValid:
@@ -85,7 +84,7 @@ class ConfigureDialog(QtGui.QDialog):
             self._ui.gfLocLineEdit.setStyleSheet(INVALID_STYLE_SHEET)
 
         valid = idValid and gfLocValid
-        # self._ui.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(valid)
+        # self._ui.buttonBox.button(QtWidgets.QDialogButtonBox.Ok).setEnabled(valid)
 
         return valid
 
@@ -126,7 +125,7 @@ class ConfigureDialog(QtGui.QDialog):
         self._ui.pathLocLineEdit.setText(config['Path'])
 
     def _gfLocClicked(self):
-        location = QtGui.QFileDialog.getSaveFileName(self, 'Select File Location', self._previousGFLoc)
+        location = QtWidgets.QFileDialog.getSaveFileName(self, 'Select File Location', self._previousGFLoc)
         print location
         if location[0]:
             self._previousGFLoc = location[0]
@@ -136,7 +135,7 @@ class ConfigureDialog(QtGui.QDialog):
         self.validate()
 
     def _ensLocClicked(self):
-        location = QtGui.QFileDialog.getSaveFileName(self, 'Select File Location', self._previousEnsLoc)
+        location = QtWidgets.QFileDialog.getSaveFileName(self, 'Select File Location', self._previousEnsLoc)
         if location[0]:
             self._previousEnsLoc = location[0]
             self._ui.ensLocLineEdit.setText(location[0])
@@ -145,7 +144,7 @@ class ConfigureDialog(QtGui.QDialog):
         self.validate()
 
     def _meshLocClicked(self):
-        location = QtGui.QFileDialog.getSaveFileName(self, 'Select File Location', self._previousMeshLoc)
+        location = QtWidgets.QFileDialog.getSaveFileName(self, 'Select File Location', self._previousMeshLoc)
         if location[0]:
             self._previousMeshLoc = location[0]
             self._ui.meshLocLineEdit.setText(location[0])
@@ -154,7 +153,7 @@ class ConfigureDialog(QtGui.QDialog):
         self.validate()
 
     def _pathLocClicked(self):
-        location = QtGui.QFileDialog.getExistingDirectory(self, 'Select Path Folder', self._previousPathLoc)
+        location = QtWidgets.QFileDialog.getExistingDirectory(self, 'Select Path Folder', self._previousPathLoc)
         if location:
             self._previousPathLoc = location
             self._ui.pathLocLineEdit.setText(location)
