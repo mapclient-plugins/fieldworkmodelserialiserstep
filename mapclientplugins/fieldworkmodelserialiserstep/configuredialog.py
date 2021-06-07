@@ -1,9 +1,9 @@
-
 from PySide2 import QtWidgets
 from mapclientplugins.fieldworkmodelserialiserstep.ui_configuredialog import Ui_Dialog
 
 INVALID_STYLE_SHEET = 'background-color: rgba(239, 0, 0, 50)'
 DEFAULT_STYLE_SHEET = 'background-color: rgba(255, 255, 255, 50)'
+
 
 class ConfigureDialog(QtWidgets.QDialog):
     '''
@@ -15,7 +15,7 @@ class ConfigureDialog(QtWidgets.QDialog):
         Constructor
         '''
         QtWidgets.QDialog.__init__(self, parent)
-        
+
         self._ui = Ui_Dialog()
         self._ui.setupUi(self)
 
@@ -52,8 +52,9 @@ class ConfigureDialog(QtWidgets.QDialog):
         result = QtWidgets.QMessageBox.Yes
         if not self.validate():
             result = QtWidgets.QMessageBox.warning(self, 'Invalid Configuration',
-                'This configuration is invalid.  Unpredictable behaviour may result if you choose \'Yes\', are you sure you want to save this configuration?)',
-                QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No, QtWidgets.QMessageBox.No)
+                                                   'This configuration is invalid.  Unpredictable behaviour may result if you choose \'Yes\', are you sure you want to save this configuration?)',
+                                                   QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
+                                                   QtWidgets.QMessageBox.No)
 
         if result == QtWidgets.QMessageBox.Yes:
             QtWidgets.QDialog.accept(self)
@@ -77,7 +78,7 @@ class ConfigureDialog(QtWidgets.QDialog):
         # don't have to be valid
         self._ui.buttonBox.button(QtWidgets.QDialogButtonBox.Ok).setEnabled(idValid)
 
-        gfLocValid = len(self._ui.gfLocLineEdit.text())>0
+        gfLocValid = len(self._ui.gfLocLineEdit.text()) > 0
         if gfLocValid:
             self._ui.gfLocLineEdit.setStyleSheet(DEFAULT_STYLE_SHEET)
         else:
@@ -126,7 +127,8 @@ class ConfigureDialog(QtWidgets.QDialog):
 
     def _gfLocClicked(self):
         location = QtWidgets.QFileDialog.getSaveFileName(self, 'Select File Location', self._previousGFLoc)
-        print location
+        print
+        location
         if location[0]:
             self._previousGFLoc = location[0]
             self._ui.gfLocLineEdit.setText(location[0])

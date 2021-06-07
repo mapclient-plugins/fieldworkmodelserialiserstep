@@ -1,4 +1,3 @@
-
 '''
 MAP Client Plugin - Fieldwork Model Serialiser Step
 Saves a fieldwork geometric_field to disk. Inputs are a GF and 
@@ -12,6 +11,7 @@ import json
 from mapclient.mountpoints.workflowstep import WorkflowStepMountPoint
 from mapclientplugins.fieldworkmodelserialiserstep.configuredialog import ConfigureDialog
 
+
 class FieldworkModelSerialiserStep(WorkflowStepMountPoint):
     '''
     Step for saving a fieldwork model to disk.
@@ -19,7 +19,7 @@ class FieldworkModelSerialiserStep(WorkflowStepMountPoint):
 
     def __init__(self, location):
         super(FieldworkModelSerialiserStep, self).__init__('Fieldwork Model Serialiser', location)
-        self._configured = False # A step cannot be executed until it has been configured.
+        self._configured = False  # A step cannot be executed until it has been configured.
         self._category = 'Sink'
         # Add any other initialisation code here:
         # Ports:
@@ -60,41 +60,41 @@ class FieldworkModelSerialiserStep(WorkflowStepMountPoint):
         may be connected up to a button in a widget for example.
         '''
         # Put your execute step code here before calling the '_doneExecution' method.
-        if self._GFFilename!=None:
+        if self._GFFilename != None:
             gfFilename = self._GFFilename
         else:
             gfFilename = self._config['GF Filename']
 
-        if self._ensFilename!=None:
+        if self._ensFilename != None:
             ensFilename = self._ensFilename
-        elif self._config['Ensemble Filename']=='':
+        elif self._config['Ensemble Filename'] == '':
             ensFilename = None
         else:
             ensFilename = self._config['Ensemble Filename']
 
-        if self._meshFilename!=None:
+        if self._meshFilename != None:
             meshFilename = self._meshFilename
-        elif self._config['Mesh Filename']=='':
+        elif self._config['Mesh Filename'] == '':
             meshFilename = None
         else:
             meshFilename = self._config['Mesh Filename']
 
-        if self._path!=None:
+        if self._path != None:
             path = self._path
-        elif self._config['Path']=='':
+        elif self._config['Path'] == '':
             path = ''
         else:
             path = self._config['Path']
 
         print('serialising fieldwork model to:')
-        print(gfFilename+'.geof')
-        if ensFilename!=None:
-            print(ensFilename+'.ens')
-        if meshFilename!=None:
-            print(meshFilename+'.mesh')
-        if path!='':
-            print('path: '+path)
-        
+        print(gfFilename + '.geof')
+        if ensFilename != None:
+            print(ensFilename + '.ens')
+        if meshFilename != None:
+            print(meshFilename + '.mesh')
+        if path != '':
+            print('path: ' + path)
+
         self._GF.save_geometric_field(gfFilename, ensFilename, meshFilename, path)
         self._doneExecution()
 
@@ -105,13 +105,13 @@ class FieldworkModelSerialiserStep(WorkflowStepMountPoint):
         uses port for this step then the index can be ignored.
         '''
         if index == 0:
-            self._GF = dataIn # ju#fieldworkmodel
+            self._GF = dataIn  # ju#fieldworkmodel
         elif index == 1:
-            self._GFFilename = dataIn # String
+            self._GFFilename = dataIn  # String
         elif index == 2:
-            self._ensFilename = dataIn # String
+            self._ensFilename = dataIn  # String
         elif index == 3:
-            self._meshFilename = dataIn # String
+            self._meshFilename = dataIn  # String
         else:
             self._path = dataIn
 
@@ -128,10 +128,10 @@ class FieldworkModelSerialiserStep(WorkflowStepMountPoint):
         dlg.setConfig(self._config)
         dlg.validate()
         dlg.setModal(True)
-        
+
         if dlg.exec_():
             self._config = dlg.getConfig()
-        
+
         self._configured = dlg.validate()
         self._configuredObserver()
 
@@ -165,4 +165,3 @@ class FieldworkModelSerialiserStep(WorkflowStepMountPoint):
         d.identifierOccursCount = self._identifierOccursCount
         d.setConfig(self._config)
         self._configured = d.validate()
-
