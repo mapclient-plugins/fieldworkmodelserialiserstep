@@ -127,8 +127,6 @@ class ConfigureDialog(QtWidgets.QDialog):
 
     def _gfLocClicked(self):
         location = QtWidgets.QFileDialog.getSaveFileName(self, 'Select File Location', self._previousGFLoc)
-        print
-        location
         if location[0]:
             self._previousGFLoc = location[0]
             self._ui.gfLocLineEdit.setText(location[0])
