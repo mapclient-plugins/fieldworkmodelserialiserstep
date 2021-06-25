@@ -1,11 +1,14 @@
-'''
+"""
 MAP Client Plugin - Fieldwork Model Serialiser Step
-Saves a fieldwork geometric_field to disk. Inputs are a GF and 
-a list of filenames for the GF, ensemble, mesh, and path. If 
-list of filenames is input, they override the filenames in 
-the plugin config. Filenames for ensemble, mesh, and path 
+Saves a fieldwork geometric_field to disk. Inputs are a GF and
+a list of filenames for the GF, ensemble, mesh, and path. If
+list of filenames is input, they override the filenames in
+the plugin config. Filenames for ensemble, mesh, and path
 can be None in input list, or empty strings in config.
-'''
+"""
+
+import os
+
 import json
 
 from mapclient.mountpoints.workflowstep import WorkflowStepMountPoint
@@ -13,9 +16,9 @@ from mapclientplugins.fieldworkmodelserialiserstep.configuredialog import Config
 
 
 class FieldworkModelSerialiserStep(WorkflowStepMountPoint):
-    '''
+    """
     Step for saving a fieldwork model to disk.
-    '''
+    """
 
     def __init__(self, location):
         super(FieldworkModelSerialiserStep, self).__init__('Fieldwork Model Serialiser', location)
@@ -54,32 +57,32 @@ class FieldworkModelSerialiserStep(WorkflowStepMountPoint):
         self._path = None
 
     def execute(self):
-        '''
+        """
         Add your code here that will kick off the execution of the step.
         Make sure you call the _doneExecution() method when finished.  This method
         may be connected up to a button in a widget for example.
-        '''
+        """
         # Put your execute step code here before calling the '_doneExecution' method.
-        if self._GFFilename != None:
-            gfFilename = self._GFFilename
+        if self._GFFilename is not None:
+            gfFilename = os.path.join(self._location, self._GFFilename)
         else:
-            gfFilename = self._config['GF Filename']
+            gfFilename = os.path.join(self._location, self._config['GF Filename'])
 
-        if self._ensFilename != None:
+        if self._ensFilename is not None:
             ensFilename = self._ensFilename
         elif self._config['Ensemble Filename'] == '':
             ensFilename = None
         else:
             ensFilename = self._config['Ensemble Filename']
 
-        if self._meshFilename != None:
+        if self._meshFilename is not None:
             meshFilename = self._meshFilename
         elif self._config['Mesh Filename'] == '':
             meshFilename = None
         else:
             meshFilename = self._config['Mesh Filename']
 
-        if self._path != None:
+        if self._path is not None:
             path = self._path
         elif self._config['Path'] == '':
             path = ''
@@ -98,22 +101,22 @@ class FieldworkModelSerialiserStep(WorkflowStepMountPoint):
         self._GF.save_geometric_field(gfFilename, ensFilename, meshFilename, path)
         self._doneExecution()
 
-    def setPortData(self, index, dataIn):
-        '''
+    def setPortData(self, index, data_in):
+        """
         Add your code here that will set the appropriate objects for this step.
         The index is the index of the port in the port list.  If there is only one
         uses port for this step then the index can be ignored.
-        '''
+        """
         if index == 0:
-            self._GF = dataIn  # ju#fieldworkmodel
+            self._GF = data_in  # ju fieldworkmodel
         elif index == 1:
-            self._GFFilename = dataIn  # String
+            self._GFFilename = data_in  # String
         elif index == 2:
-            self._ensFilename = dataIn  # String
+            self._ensFilename = data_in  # String
         elif index == 3:
-            self._meshFilename = dataIn  # String
+            self._meshFilename = data_in  # String
         else:
-            self._path = dataIn
+            self._path = data_in
 
     def configure(self):
         '''
@@ -124,6 +127,7 @@ class FieldworkModelSerialiserStep(WorkflowStepMountPoint):
             self._configured = True
         '''
         dlg = ConfigureDialog(self._main_window)
+        dlg.setWorkflowLocation(self._location)
         dlg.identifierOccursCount = self._identifierOccursCount
         dlg.setConfig(self._config)
         dlg.validate()
@@ -162,6 +166,7 @@ class FieldworkModelSerialiserStep(WorkflowStepMountPoint):
         self._config.update(json.loads(string))
 
         d = ConfigureDialog()
+        d.setWorkflowLocation(self._location)
         d.identifierOccursCount = self._identifierOccursCount
         d.setConfig(self._config)
         self._configured = d.validate()
