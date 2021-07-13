@@ -1,3 +1,4 @@
+import os
 from PySide2 import QtWidgets
 from mapclientplugins.fieldworkmodelserialiserstep.ui_configuredialog import Ui_Dialog
 
@@ -18,6 +19,8 @@ class ConfigureDialog(QtWidgets.QDialog):
 
         self._ui = Ui_Dialog()
         self._ui.setupUi(self)
+
+        self._workflow_location = None
 
         # Keep track of the previous identifier so that we can track changes
         # and know how many occurrences of the current identifier there should
@@ -44,11 +47,14 @@ class ConfigureDialog(QtWidgets.QDialog):
         self._ui.pathLocButton.clicked.connect(self._pathLocClicked)
         self._ui.pathLocLineEdit.textChanged.connect(self._pathLocEdited)
 
+    def setWorkflowLocation(self, location):
+        self._workflow_location = location
+
     def accept(self):
-        '''
+        """
         Override the accept method so that we can confirm saving an
         invalid configuration.
-        '''
+        """
         result = QtWidgets.QMessageBox.Yes
         if not self.validate():
             result = QtWidgets.QMessageBox.warning(self, 'Invalid Configuration',
@@ -60,32 +66,33 @@ class ConfigureDialog(QtWidgets.QDialog):
             QtWidgets.QDialog.accept(self)
 
     def validate(self):
-        '''
+        """
         Validate the configuration dialog fields.  For any field that is not valid
-        set the style sheet to the INVALID_STYLE_SHEET.  Return the outcome of the 
+        set the style sheet to the INVALID_STYLE_SHEET.  Return the outcome of the
         overall validity of the configuration.
-        '''
+        """
         # Determine if the current identifier is unique throughout the workflow
         # The identifierOccursCount method is part of the interface to the workflow framework.
-        idValue = self.identifierOccursCount(self._ui.idLineEdit.text())
-        idValid = (idValue == 0) or (idValue == 1 and self._previousIdentifier == self._ui.idLineEdit.text())
-        if idValid:
-            self._ui.idLineEdit.setStyleSheet(DEFAULT_STYLE_SHEET)
-        else:
-            self._ui.idLineEdit.setStyleSheet(INVALID_STYLE_SHEET)
+        id_value = self.identifierOccursCount(self._ui.idLineEdit.text())
+        id_valid = (id_value == 0) or (id_value == 1 and self._previousIdentifier == self._ui.idLineEdit.text())
+        # if id_valid:
+        #     self._ui.idLineEdit.setStyleSheet(DEFAULT_STYLE_SHEET)
+        # else:
+        #     self._ui.idLineEdit.setStyleSheet(INVALID_STYLE_SHEET)
+        self._ui.idLineEdit.setStyleSheet(DEFAULT_STYLE_SHEET if id_valid else INVALID_STYLE_SHEET)
 
-        # ok button can be pressed as long as id is okay, rest of configs
-        # don't have to be valid
-        self._ui.buttonBox.button(QtWidgets.QDialogButtonBox.Ok).setEnabled(idValid)
+        # gf_loc_valid = len(self._ui.gfLocLineEdit.text()) > 0
+        gf_loc_valid = os.path.isfile(os.path.join(self._workflow_location, self._ui.gfLocLineEdit.text()))
 
-        gfLocValid = len(self._ui.gfLocLineEdit.text()) > 0
-        if gfLocValid:
-            self._ui.gfLocLineEdit.setStyleSheet(DEFAULT_STYLE_SHEET)
-        else:
-            self._ui.gfLocLineEdit.setStyleSheet(INVALID_STYLE_SHEET)
+        # if gf_loc_valid:
+        #     self._ui.gfLocLineEdit.setStyleSheet(DEFAULT_STYLE_SHEET)
+        # else:
+        #     self._ui.gfLocLineEdit.setStyleSheet(INVALID_STYLE_SHEET)
+        self._ui.gfLocLineEdit.setStyleSheet(DEFAULT_STYLE_SHEET if gf_loc_valid else INVALID_STYLE_SHEET)
 
-        valid = idValid and gfLocValid
-        # self._ui.buttonBox.button(QtWidgets.QDialogButtonBox.Ok).setEnabled(valid)
+        valid = id_valid and gf_loc_valid
+        # OK button can be pressed as long as id is okay, rest of configs don't have to be valid
+        self._ui.buttonBox.button(QtWidgets.QDialogButtonBox.Ok).setEnabled(id_valid)
 
         return valid
 
