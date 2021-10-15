@@ -44,7 +44,6 @@ class FieldworkModelSerialiserStep(WorkflowStepMountPoint):
                       'python#string'))
 
         self._config = {}
-        self._config['identifier'] = ''
         self._config['GF Filename'] = ''
         self._config['Ensemble Filename'] = ''
         self._config['Mesh Filename'] = ''
@@ -55,6 +54,8 @@ class FieldworkModelSerialiserStep(WorkflowStepMountPoint):
         self._ensFilename = None
         self._meshFilename = None
         self._path = None
+
+        self._identifier = ''
 
     def execute(self):
         """
@@ -128,7 +129,6 @@ class FieldworkModelSerialiserStep(WorkflowStepMountPoint):
         """
         dlg = ConfigureDialog(self._main_window)
         dlg.setWorkflowLocation(self._location)
-        dlg.identifierOccursCount = self._identifierOccursCount
         dlg.setConfig(self._config)
         dlg.validate()
         dlg.setModal(True)
@@ -143,13 +143,13 @@ class FieldworkModelSerialiserStep(WorkflowStepMountPoint):
         """
         The identifier is a string that must be unique within a workflow.
         """
-        return self._config['identifier']
+        return self._identifier
 
     def setIdentifier(self, identifier):
         """
         The framework will set the identifier for this step when it is loaded.
         """
-        self._config['identifier'] = identifier
+        self._identifier = identifier
 
     def serialize(self):
         """
@@ -167,6 +167,5 @@ class FieldworkModelSerialiserStep(WorkflowStepMountPoint):
 
         d = ConfigureDialog()
         d.setWorkflowLocation(self._location)
-        d.identifierOccursCount = self._identifierOccursCount
         d.setConfig(self._config)
         self._configured = d.validate()
