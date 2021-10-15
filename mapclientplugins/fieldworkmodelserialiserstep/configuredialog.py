@@ -7,9 +7,9 @@ DEFAULT_STYLE_SHEET = 'background-color: rgba(255, 255, 255, 50)'
 
 
 class ConfigureDialog(QtWidgets.QDialog):
-    '''
+    """
     Configure dialog to present the user with the options to configure this step.
-    '''
+    """
 
     def __init__(self, parent=None):
         '''
@@ -97,11 +97,11 @@ class ConfigureDialog(QtWidgets.QDialog):
         return valid
 
     def getConfig(self):
-        '''
+        """
         Get the current value of the configuration from the dialog.  Also
         set the _previousIdentifier value so that we can check uniqueness of the
         identifier over the whole of the workflow.
-        '''
+        """
         self._previousIdentifier = self._ui.idLineEdit.text()
         self._previousGFLoc = self._ui.gfLocLineEdit.text()
         self._previousEnsLoc = self._ui.ensLocLineEdit.text()
@@ -116,11 +116,11 @@ class ConfigureDialog(QtWidgets.QDialog):
         return config
 
     def setConfig(self, config):
-        '''
+        """
         Set the current value of the configuration for the dialog.  Also
         set the _previousIdentifier value so that we can check uniqueness of the
         identifier over the whole of the workflow.
-        '''
+        """
         self._previousIdentifier = config['identifier']
         self._previousGFLoc = config['GF Filename']
         self._previousEnsLoc = config['Ensemble Filename']

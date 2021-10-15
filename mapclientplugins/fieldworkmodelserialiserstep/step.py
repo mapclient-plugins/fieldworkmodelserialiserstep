@@ -119,13 +119,13 @@ class FieldworkModelSerialiserStep(WorkflowStepMountPoint):
             self._path = data_in
 
     def configure(self):
-        '''
+        """
         This function will be called when the configure icon on the step is
         clicked.  It is appropriate to display a configuration dialog at this
         time.  If the conditions for the configuration of this step are complete
         then set:
             self._configured = True
-        '''
+        """
         dlg = ConfigureDialog(self._main_window)
         dlg.setWorkflowLocation(self._location)
         dlg.identifierOccursCount = self._identifierOccursCount
@@ -140,29 +140,29 @@ class FieldworkModelSerialiserStep(WorkflowStepMountPoint):
         self._configuredObserver()
 
     def getIdentifier(self):
-        '''
+        """
         The identifier is a string that must be unique within a workflow.
-        '''
+        """
         return self._config['identifier']
 
     def setIdentifier(self, identifier):
-        '''
+        """
         The framework will set the identifier for this step when it is loaded.
-        '''
+        """
         self._config['identifier'] = identifier
 
     def serialize(self):
-        '''
+        """
         Add code to serialize this step to disk. Returns a json string for
         mapclient to serialise.
-        '''
+        """
         return json.dumps(self._config, default=lambda o: o.__dict__, sort_keys=True, indent=4)
 
     def deserialize(self, string):
-        '''
+        """
         Add code to deserialize this step from disk. Parses a json string
         given by mapclient
-        '''
+        """
         self._config.update(json.loads(string))
 
         d = ConfigureDialog()
