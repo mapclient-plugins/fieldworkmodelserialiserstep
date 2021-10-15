@@ -63,14 +63,27 @@ class ConfigureDialog(QtWidgets.QDialog):
         set the style sheet to the INVALID_STYLE_SHEET.  Return the outcome of the
         overall validity of the configuration.
         """
-        gf_loc_valid = os.path.isfile(os.path.join(self._workflow_location, self._ui.gfLocLineEdit.text()))
+        output_path = self._ui.gfLocLineEdit.text()
+        output_directory = os.path.dirname(output_path)
+        non_empty = len(output_path)
 
-        self._ui.gfLocLineEdit.setStyleSheet(DEFAULT_STYLE_SHEET if gf_loc_valid else INVALID_STYLE_SHEET)
+        if not os.path.isabs(output_directory):
+            output_directory = os.path.join(self._workflow_location, output_directory)
 
-        # OK button can be pressed as long as id is okay, rest of configs don't have to be valid
-        self._ui.buttonBox.button(QtWidgets.QDialogButtonBox.Ok).setEnabled(gf_loc_valid)
+        output_directory_valid = os.path.exists(output_directory) and non_empty
 
-        return gf_loc_valid
+        self._ui.buttonBox.button(QtWidgets.QDialogButtonBox.Ok).setEnabled(output_directory_valid)
+        self._ui.gfLocLineEdit.setStyleSheet(DEFAULT_STYLE_SHEET if output_directory_valid else INVALID_STYLE_SHEET)
+
+        other_fields = [self._ui.ensLocLineEdit, self._ui.meshLocLineEdit, self._ui.pathLocLineEdit]
+        for field in other_fields:
+            path = field.text()
+            if not os.path.isabs(path):
+                path = os.path.join(self._workflow_location, path)
+            field_valid = os.path.exists(path) and len(path)
+            field.setStyleSheet(DEFAULT_STYLE_SHEET if field_valid else INVALID_STYLE_SHEET)
+
+        return output_directory_valid
 
     def getConfig(self):
         """
@@ -104,7 +117,11 @@ class ConfigureDialog(QtWidgets.QDialog):
         location = QtWidgets.QFileDialog.getSaveFileName(self, 'Select File Location', self._previousGFLoc)
         if location[0]:
             self._previousGFLoc = location[0]
-            self._ui.gfLocLineEdit.setText(location[0])
+
+            if self._workflow_location:
+                self._ui.gfLocLineEdit.setText(os.path.relpath(location[0], self._workflow_location))
+            else:
+                self._ui.gfLocLineEdit.setText(location[0])
 
     def _gfLocEdited(self):
         self.validate()
@@ -113,7 +130,11 @@ class ConfigureDialog(QtWidgets.QDialog):
         location = QtWidgets.QFileDialog.getSaveFileName(self, 'Select File Location', self._previousEnsLoc)
         if location[0]:
             self._previousEnsLoc = location[0]
-            self._ui.ensLocLineEdit.setText(location[0])
+
+            if self._workflow_location:
+                self._ui.ensLocLineEdit.setText(os.path.relpath(location[0], self._workflow_location))
+            else:
+                self._ui.ensLocLineEdit.setText(location[0])
 
     def _ensLocEdited(self):
         self.validate()
@@ -122,7 +143,11 @@ class ConfigureDialog(QtWidgets.QDialog):
         location = QtWidgets.QFileDialog.getSaveFileName(self, 'Select File Location', self._previousMeshLoc)
         if location[0]:
             self._previousMeshLoc = location[0]
-            self._ui.meshLocLineEdit.setText(location[0])
+
+            if self._workflow_location:
+                self._ui.meshLocLineEdit.setText(os.path.relpath(location[0], self._workflow_location))
+            else:
+                self._ui.meshLocLineEdit.setText(location[0])
 
     def _meshLocEdited(self):
         self.validate()
@@ -131,7 +156,11 @@ class ConfigureDialog(QtWidgets.QDialog):
         location = QtWidgets.QFileDialog.getExistingDirectory(self, 'Select Path Folder', self._previousPathLoc)
         if location:
             self._previousPathLoc = location
-            self._ui.pathLocLineEdit.setText(location)
+
+            if self._workflow_location:
+                self._ui.pathLocLineEdit.setText(os.path.relpath(location, self._workflow_location))
+            else:
+                self._ui.pathLocLineEdit.setText(location)
 
     def _pathLocEdited(self):
         self.validate()

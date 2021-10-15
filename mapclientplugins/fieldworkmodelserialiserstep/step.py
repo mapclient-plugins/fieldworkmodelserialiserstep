@@ -67,28 +67,40 @@ class FieldworkModelSerialiserStep(WorkflowStepMountPoint):
         if self._GFFilename is not None:
             gfFilename = os.path.join(self._location, self._GFFilename)
         else:
-            gfFilename = os.path.join(self._location, self._config['GF Filename'])
+            # gfFilename = os.path.join(self._location, self._config['GF Filename'])
+            gfFilename = self._config['GF Filename']
+            if not os.path.isabs(gfFilename):
+                gfFilename = os.path.join(self._location, gfFilename)
 
         if self._ensFilename is not None:
             ensFilename = self._ensFilename
         elif self._config['Ensemble Filename'] == '':
             ensFilename = None
         else:
+            # ensFilename = self._config['Ensemble Filename']
             ensFilename = self._config['Ensemble Filename']
+            if not os.path.isabs(ensFilename):
+                ensFilename = os.path.join(self._location, ensFilename)
 
         if self._meshFilename is not None:
             meshFilename = self._meshFilename
         elif self._config['Mesh Filename'] == '':
             meshFilename = None
         else:
+            # meshFilename = self._config['Mesh Filename']
             meshFilename = self._config['Mesh Filename']
+            if not os.path.isabs(meshFilename):
+                meshFilename = os.path.join(self._location, meshFilename)
 
         if self._path is not None:
             path = self._path
         elif self._config['Path'] == '':
             path = ''
         else:
+            # path = self._config['Path']
             path = self._config['Path']
+            if not os.path.isabs(path):
+                path = os.path.join(self._location, path)
 
         print('serialising fieldwork model to:')
         print(gfFilename + '.geof')
