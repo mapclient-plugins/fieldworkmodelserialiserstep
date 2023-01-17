@@ -5,7 +5,7 @@ MAP Client plugin for writing a Fieldwork mesh to file.
 
 Requires
 --------
-- GIAS2 : https://bitbucket.org/jangle/gias2
+- GIAS3 : https://github.com/musculoskeletal/gias3
 
 Inputs
 ------
@@ -16,7 +16,7 @@ Inputs
 
 Outputs
 -------
-- **fieldworkmodel** [GIAS2 GeometricField instance] : The Fieldwork mesh read from file.
+- **fieldworkmodel** [GIAS3 GeometricField instance] : The Fieldwork mesh read from file.
 
 Configuration
 -------------
