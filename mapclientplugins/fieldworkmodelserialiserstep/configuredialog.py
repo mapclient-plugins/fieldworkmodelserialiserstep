@@ -75,23 +75,26 @@ class ConfigureDialog(QtWidgets.QDialog):
         # The identifierOccursCount method is part of the interface to the workflow framework.
         id_value = self.identifierOccursCount(self._ui.idLineEdit.text())
         id_valid = (id_value == 0) or (id_value == 1 and self._previousIdentifier == self._ui.idLineEdit.text())
-        # if id_valid:
-        #     self._ui.idLineEdit.setStyleSheet(DEFAULT_STYLE_SHEET)
-        # else:
-        #     self._ui.idLineEdit.setStyleSheet(INVALID_STYLE_SHEET)
         self._ui.idLineEdit.setStyleSheet(DEFAULT_STYLE_SHEET if id_valid else INVALID_STYLE_SHEET)
+        gf_loc_valid = False
 
-        # gf_loc_valid = len(self._ui.gfLocLineEdit.text()) > 0
-        gf_loc_valid = os.path.isfile(os.path.join(self._workflow_location, self._ui.gfLocLineEdit.text()))
+        for field in [self._ui.gfLocLineEdit, self._ui.ensLocLineEdit, self._ui.meshLocLineEdit, self._ui.pathLocLineEdit]:
 
-        # if gf_loc_valid:
-        #     self._ui.gfLocLineEdit.setStyleSheet(DEFAULT_STYLE_SHEET)
-        # else:
-        #     self._ui.gfLocLineEdit.setStyleSheet(INVALID_STYLE_SHEET)
-        self._ui.gfLocLineEdit.setStyleSheet(DEFAULT_STYLE_SHEET if gf_loc_valid else INVALID_STYLE_SHEET)
+            text = field.text()
+            if field is not self._ui.pathLocLineEdit:
+                text = os.path.dirname(text)
+
+            output_location = self._output_location(text)
+            if self._workflow_location:
+                output_location = os.path.join(self._workflow_location, output_location)
+            field_valid = os.path.exists(output_location) and len(field.text())
+            field.setStyleSheet(DEFAULT_STYLE_SHEET if field_valid else INVALID_STYLE_SHEET)
+
+            if field is self._ui.gfLocLineEdit:
+                gf_loc_valid = field_valid
 
         valid = id_valid and gf_loc_valid
-        # OK button can be pressed as long as id is okay, rest of configs don't have to be valid
+
         self._ui.buttonBox.button(QtWidgets.QDialogButtonBox.Ok).setEnabled(id_valid)
 
         return valid
@@ -132,11 +135,19 @@ class ConfigureDialog(QtWidgets.QDialog):
         self._ui.meshLocLineEdit.setText(config['Mesh Filename'])
         self._ui.pathLocLineEdit.setText(config['Path'])
 
+    def _output_location(self, location):
+        display_path = location
+        if self._workflow_location and os.path.isabs(display_path):
+            display_path = os.path.relpath(display_path, self._workflow_location)
+
+        return display_path
+
     def _gfLocClicked(self):
         location = QtWidgets.QFileDialog.getSaveFileName(self, 'Select File Location', self._previousGFLoc)
         if location[0]:
             self._previousGFLoc = location[0]
-            self._ui.gfLocLineEdit.setText(location[0])
+            display_location = self._output_location(location[0])
+            self._ui.gfLocLineEdit.setText(display_location)
 
     def _gfLocEdited(self):
         self.validate()
@@ -145,7 +156,8 @@ class ConfigureDialog(QtWidgets.QDialog):
         location = QtWidgets.QFileDialog.getSaveFileName(self, 'Select File Location', self._previousEnsLoc)
         if location[0]:
             self._previousEnsLoc = location[0]
-            self._ui.ensLocLineEdit.setText(location[0])
+            display_location = self._output_location(location[0])
+            self._ui.ensLocLineEdit.setText(display_location)
 
     def _ensLocEdited(self):
         self.validate()
@@ -154,7 +166,8 @@ class ConfigureDialog(QtWidgets.QDialog):
         location = QtWidgets.QFileDialog.getSaveFileName(self, 'Select File Location', self._previousMeshLoc)
         if location[0]:
             self._previousMeshLoc = location[0]
-            self._ui.meshLocLineEdit.setText(location[0])
+            display_location = self._output_location(location[0])
+            self._ui.meshLocLineEdit.setText(display_location)
 
     def _meshLocEdited(self):
         self.validate()
@@ -163,7 +176,8 @@ class ConfigureDialog(QtWidgets.QDialog):
         location = QtWidgets.QFileDialog.getExistingDirectory(self, 'Select Path Folder', self._previousPathLoc)
         if location:
             self._previousPathLoc = location
-            self._ui.pathLocLineEdit.setText(location)
+            display_location = self._output_location(location[0])
+            self._ui.pathLocLineEdit.setText(display_location)
 
     def _pathLocEdited(self):
         self.validate()
